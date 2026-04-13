@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="meta_title">Webzone Online Service Center | Digital Services near Areekode, Kizhisseri & Kadungalloor</title>
+  <meta name="description"
+    content="Webzone Online Service Center provides PAN card, Aadhaar, passport, and certificate services near Kadungalloor, Areekode, Kizhisseri, Vilayil, and nearby areas. Fast, reliable, and trusted digital services.">
+  <meta name="keywords"
+    content="Webzone, Online Service Center, Areekode, Kadungalloor, Kizhisseri, Vilayil, Parappur, Velleri, Hajiyar Padi, Mundamparamba, PAN card near me, Aadhaar correction, digital services Kerala">
+
+  <!-- Local SEO Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Webzone Online Service Center",
+    "image": "https://webzone.kakokicreative.in/images/logo.png",
+    "@id": "https://webzone.kakokicreative.in",
+    "url": "https://webzone.kakokicreative.in",
+    "telephone": "+919048532576",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Kadungallur Brg",
+      "addressLocality": "Kadungallur",
+      "addressRegion": "Kerala",
+      "postalCode": "673641",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 11.1396, 
+      "longitude": 76.0142
+    },
+    "areaServed": [
+      "Kadungallur", "Areekode", "Kizhisseri", "Vilayil", "Parappur", "Velleri", "Hajiyar Padi", "Mundamparamba"
+    ],
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+      ],
+      "opens": "09:00",
+      "closes": "19:00"
+    }
+  }
+  </script>
+  <meta property="og:title" content="Webzone Online Service Center">
+  <meta property="og:description"
+    content="Fast, simple digital services via WhatsApp. No login. No confusion. Just done.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.webzonekgr.in">
+  <link rel="canonical" href="https://www.webzonekgr.in">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar" id="mainNav">
+    <!-- Top Bar (Gov Style) -->
+    <div class="gov-top-bar">
+      <div class="gov-top-bar-inner">
+        <div class="gov-tag">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Official Digital Gateway • Webzone Service Hub</span>
+        </div>
+        <div class="gov-links">
+          <span>Help Desk: +91 90485 32576</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-container">
+      <!-- Brand -->
+      <a href="#" class="nav-brand" onclick="scrollToTop()">
+        <img src="images/webzone_logo.png" alt="Webzone Logo" class="brand-img-logo">
+      </a>
+
+      <!-- Center Nav -->
+      <nav class="nav-links" id="navLinks">
+        <a href="#services" class="nav-link" data-i18n="nav_services">Services</a>
+        <a href="#about" class="nav-link" data-i18n="nav_about">About</a>
+        <a href="#news" class="nav-link" data-i18n="nav_news">News</a>
+        <a href="#contact" class="nav-link" data-i18n="nav_contact">Contact</a>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="nav-actions">
+        <!-- Search -->
+        <div class="search-wrap" id="searchWrap">
+          <button class="search-toggle" id="searchToggle" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <div class="search-box" id="searchBox">
+            <input type="text" id="searchInput" data-i18n-ph="search_ph" placeholder="Search services..."
+              autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
+          </div>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="lang-switch" id="langSwitch">
+          <button class="lang-btn" id="langBtn">
+            <i class="fa-solid fa-globe"></i>
+            <span id="langLabel">EN</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i>
+          </button>
+          <div class="lang-menu" id="langMenu">
+            <button class="lang-opt active" data-lang="en" id="lang_en">🇬🇧 English</button>
+            <button class="lang-opt" data-lang="ml" id="lang_ml">🇮🇳 മലയാളം</button>
+            <button class="lang-opt" data-lang="hi" id="lang_hi">🇮🇳 हिंदी</button>
+          </div>
+        </div>
+
+        <!-- WhatsApp CTA -->
+        <a href="https://wa.me/919048532576?text=Hello%2C%20I%20need%20a%20digital%20service" target="_blank"
+          class="btn-whatsapp-nav" id="navWhatsappBtn">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span data-i18n="nav_whatsapp">WhatsApp</span>
+        </a>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+          <i class="fa-solid fa-bars" id="menuIcon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="#services" class="mobile-nav-link" data-i18n="nav_services">Services</a>
+      <a href="#about" class="mobile-nav-link" data-i18n="nav_about">About</a>
+      <a href="#news" class="mobile-nav-link" data-i18n="nav_news">News</a>
+      <a href="#contact" class="mobile-nav-link" data-i18n="nav_contact">Contact</a>
+      <a href="https://wa.me/919048532576" target="_blank" class="mobile-nav-link mobile-wa">
+        <i class="fa-brands fa-whatsapp"></i> WhatsApp Us
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== ENHANCED HERO SLIDER ===== -->
+  <section class="hero-section" id="home">
+    <div class="hero-slider-wrap">
+      <div class="hero-slider" id="heroSlider">
+        <!-- Slide 1 -->
+        <div class="hero-slide active" id="slide0"
+          style="background-image: url('https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+          <div class="hero-slide-inner">
+            <div class="hero-badge" data-i18n="hero_badge">Trusted Digital Gateway</div>
+            <h1 class="hero-title" data-i18n="hero1_title">All Online Services<br>Under One Roof</h1>
+            <p class="hero-desc" data-i18n="hero1_desc">From Aadhaar to Passport — apply for any government service
+              easily via WhatsApp. No confusion. Just get it done.</p>
+            <div class="hero-btns">
+              <a href="#services" class="btn-hero-primary" data-i18n="hero_btn_explore">
+                <i class="fa-solid fa-grid-2"></i> Explore Services
+              </a>
+              <a href="https://wa.me/919048532576?text=Hello%2C%20I%20need%20a%20service" target="_blank"
+                class="btn-hero-wa">
+                <i class="fa-brands fa-whatsapp"></i> <span data-i18n="hero_btn_wa">WhatsApp Now</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="hero-slide" id="slide1"
+          style="background-image: url('https://images.pexels.com/photos/3184325/pexels-photo-3184325.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+          <div class="hero-slide-inner">
+            <div class="hero-badge">📱 WhatsApp First</div>
+            <h1 class="hero-title" data-i18n="hero2_title">Fast & Reliable<br>Digital Services</h1>
+            <p class="hero-desc" data-i18n="hero2_desc">Click a service button. WhatsApp opens with your message
+              pre-filled. Send and we handle the rest.</p>
+            <div class="hero-btns">
+              <a href="#services" class="btn-hero-primary" data-i18n="hero_btn_explore">
+                <i class="fa-solid fa-grid-2"></i> Explore Services
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="hero-slide" id="slide2"
+          style="background-image: url('https://images.pexels.com/photos/3182750/pexels-photo-3182750.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+          <div class="hero-slide-inner">
+            <div class="hero-badge">🌟 CSC • KSMART • KERALA</div>
+            <h1 class="hero-title" data-i18n="hero3_title">Apply Easily<br>via WhatsApp</h1>
+            <p class="hero-desc" data-i18n="hero3_desc">Simple. Fast. Human. We are your local digital partner — serving
+              your community with care and speed.</p>
+            <div class="hero-btns">
+              <a href="https://wa.me/919048532576?text=Hello%2C%20I%20want%20to%20apply%20for%20a%20service"
+                target="_blank" class="btn-hero-wa">
+                <i class="fa-brands fa-whatsapp"></i> <span data-i18n="hero_btn_wa">WhatsApp Now</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider Controls -->
+      <button class="hero-arrow prev" id="heroPrev" aria-label="Previous">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button class="hero-arrow next" id="heroNext" aria-label="Next">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <div class="hero-dots" id="heroDots">
+        <button class="hero-dot active" data-slide="0"></button>
+        <button class="hero-dot" data-slide="1"></button>
+        <button class="hero-dot" data-slide="2"></button>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- ===== MARQUEE ANNOUNCEMENT BAR ===== -->
+  <div class="marquee-bar ksmart-marquee" id="marqueeBar">
+    <div class="marquee-label">
+      <i class="fa-solid fa-circle-info"></i>
+    </div>
+    <button class="btn-marquee-join">Join here</button>
+    <div class="marquee-track-wrap">
+      <div class="marquee-track" id="marqueeTrack">
+        <div class="marquee-inner" id="marqueeInner">
+          <span data-i18n="ann1">✅ Online classes for residents available every working day 4.00 to 6.00 PM</span>
+          <span class="marquee-sep">|</span>
+          <span data-i18n="ann2">📘 Citizen portal applications are active</span>
+          <span class="marquee-sep">|</span>
+          <span data-i18n="ann3">⏰ Open Monday–Saturday: 9AM to 7PM</span>
+          <span class="marquee-sep">|</span>
+          <span data-i18n="ann4">🆕 Voter ID new enrollment now available</span>
+          <span class="marquee-sep">|</span>
+        </div>
+        <!-- Loop track -->
+        <div class="marquee-inner" aria-hidden="true">
+          <span data-i18n="ann1">✅ Online classes for residents available every working day 4.00 to 6.00 PM</span>
+          <span class="marquee-sep">|</span>
+          <span data-i18n="ann2">📘 Citizen portal applications are active</span>
+          <span class="marquee-sep">|</span>
+          <span data-i18n="ann3">⏰ Open Monday–Saturday: 9AM to 7PM</span>
+          <span class="marquee-sep">|</span>
+          <span data-i18n="ann4">🆕 Voter ID new enrollment now available</span>
+          <span class="marquee-sep">|</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SERVICES SECTION ===== -->
+  <section class="section" id="services">
+    <div class="container">
+      <!-- Section Header -->
+      <div class="section-header">
+        <div class="section-badge" data-i18n="srv_badge">Our Services</div>
+        <h2 class="section-title" data-i18n="srv_title">What Can We Help You With?</h2>
+        <p class="section-desc" data-i18n="srv_desc">Select any service below and we'll open WhatsApp with your
+          application pre-filled. Simple as that.</p>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="services-search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="srvSearchInput" data-i18n-ph="search_ph" placeholder="Search services...">
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="srv-tabs" id="srvTabs">
+        <button class="srv-tab active" data-cat="all" data-i18n="cat_all">All Services</button>
+        <button class="srv-tab" data-cat="gov" data-i18n="cat_gov">🏛 Government</button>
+        <button class="srv-tab" data-cat="utility" data-i18n="cat_utility">⚡ Utility</button>
+        <button class="srv-tab" data-cat="financial" data-i18n="cat_fin">💰 Financial</button>
+        <button class="srv-tab" data-cat="other" data-i18n="cat_other">🎫 Others</button>
+      </div>
+
+      <div class="services-grid reveal-stagger" id="servicesGrid">
+        <!-- Dynamically rendered by JS -->
+      </div>
+
+      <div class="show-more-wrap" id="showMoreWrap" style="display: none; text-align: center; margin-top: 40px;">
+        <button class="btn-hero-primary" id="showMoreBtn">
+            <span data-i18n="show_more">Show More Services</span> <i class="fa-solid fa-chevron-down"></i>
+        </button>
+      </div>
+
+      <!-- Custom Inquiry -->
+      <div class="custom-inquiry-box"
+        style="margin-top: 60px; text-align: center; padding: 40px; background: var(--primary-light); border-radius: var(--radius-lg); border: 2px dashed var(--primary);">
+        <h3 style="color: var(--primary); margin-bottom: 12px;" data-i18n="custom_svc_title">Can't find a specific
+          service?</h3>
+        <p style="color: var(--secondary); margin-bottom: 24px;" data-i18n="custom_svc_desc">Don't worry! We handle
+          hundreds of specialized digital services. Just ask us directly.</p>
+        <a href="https://wa.me/919048532576?text=Hello%20Webzone%2C%20I%20need%20a%20specific%20service%20not%20listed%20here..."
+          target="_blank" class="btn-hero-wa" style="display: inline-flex;">
+          <i class="fa-brands fa-whatsapp"></i> <span data-i18n="custom_svc_btn">Enquire Any Service</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT / FOUNDER ===== -->
+  <section class="section about-section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <!-- Left: Photo Card -->
+        <div class="about-img-col">
+          <div class="founder-photo-card">
+            <div class="founder-exp-badge">
+              <span class="num">5+</span>
+              <span class="txt">Years of Trust</span>
+            </div>
+            <img src="images/azhar.jpg" alt="Azharudheen Velleri" class="founder-img">
+            <div class="founder-img-details">
+              <h3 class="founder-name" data-i18n="founder_name">Azharudheen Velleri</h3>
+              <p class="founder-role" data-i18n="founder_role">Founder</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Content -->
+        <div class="about-text-col">
+          <div class="section-badge" data-i18n="about_badge">Founder & Vision</div>
+          <h2 class="section-title left" data-i18n="about_title">Trusted Digital Service Hub</h2>
+
+          <div class="about-content">
+            <p class="about-p" data-i18n="about_p1">Webzone was established by Azharudheen Velleri with a clear mission:
+              to simplify digital services for everyone. Our goal is to remove the complexity of online applications and
+              make essential services accessible through technology you use every day.</p>
+            <p class="about-p" data-i18n="about_p2">Inspired by the CSC (Common Service Center) model, we prioritize
+              trust and reliability in every interaction. We believe that a customer-first approach is the key to
+              creating a truly helpful digital gateway for the community.</p>
+            <p class="about-p" data-i18n="about_p3">At Webzone, simplicity is our core strength. We handle the paperwork
+              and technical hurdles so you don't have to, providing a smooth and dependable experience that people can
+              rely on.</p>
+            <p class="about-seo" data-i18n="about_seo" style="margin-top: 20px; font-weight: 500; font-size: 14px; color: var(--primary);"></p>
+          </div>
+
+          <div class="about-tagline" data-i18n="about_tagline">Built on Trust. Focused on Service.</div>
+
+          <div class="about-cta">
+            <a href="https://wa.me/919048532576?text=Hello%20Azharudheen%2C%20I%20need%20your%20help%20with%20a%20service"
+              target="_blank" class="btn-about-wa">
+              <i class="fa-brands fa-whatsapp"></i> <span data-i18n="founder_chat">Chat with Founder</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge" data-i18n="hiw_badge">Simple Process</div>
+        <h2 class="section-title" data-i18n="hiw_title">How It Works</h2>
+      </div>
+      <div class="steps-grid reveal-stagger">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-icon"><i class="fa-solid fa-list-ul"></i></div>
+          <h3 data-i18n="step1_title">Choose a Service</h3>
+          <p data-i18n="step1_desc">Browse our list and tap on the service you need.</p>
+        </div>
+        <div class="step-divider"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-icon"><i class="fa-brands fa-whatsapp"></i></div>
+          <h3 data-i18n="step2_title">Click WhatsApp</h3>
+          <p data-i18n="step2_desc">Your service request opens in WhatsApp — pre-filled for you.</p>
+        </div>
+        <div class="step-divider"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-icon"><i class="fa-solid fa-paper-plane"></i></div>
+          <h3 data-i18n="step3_title">Send & Relax</h3>
+          <p data-i18n="step3_desc">Hit send. Our team takes it from there and keeps you updated.</p>
+        </div>
+        <div class="step-divider"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <h3 data-i18n="step4_title">Service Done!</h3>
+          <p data-i18n="step4_desc">We complete your service and deliver the result digitally.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS SECTION ===== -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid reveal-stagger">
+        <div class="stat-item">
+          <div class="stat-num" data-count="5000">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label" data-i18n="stat1">Services Completed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-count="20">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label" data-i18n="stat2">Service Categories</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-count="98">0</div>
+          <div class="stat-plus">%</div>
+          <div class="stat-label" data-i18n="stat3">Customer Satisfaction</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-count="3">0</div>
+          <div class="stat-plus"> yrs</div>
+          <div class="stat-label" data-i18n="stat4">Years of Service</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ SECTION ===== -->
+  <section class="section faq-section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge" data-i18n="faq_badge">FAQ</div>
+        <h2 class="section-title" data-i18n="faq_title">Common Questions</h2>
+        <p class="section-desc" data-i18n="faq_desc">Quick answers to what most people ask us</p>
+      </div>
+      <div class="faq-list reveal-stagger" id="faqList">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEWS & EVENTS ===== -->
+  <section class="section news-section" id="news">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge" data-i18n="news_badge">Latest Updates</div>
+        <h2 class="section-title" data-i18n="news_title">News & Events</h2>
+        <p class="section-desc" data-i18n="news_desc">Stay updated with the latest service announcements and events</p>
+      </div>
+      <div class="news-grid reveal-stagger" id="newsGrid" data-reveal="fade-up">
+        <div class="news-loading">
+          <div class="spinner"></div>
+          <p data-i18n="news_loading">Fetching latest news...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT SECTION ===== -->
+  <section class="section contact-section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge" data-i18n="con_badge">Get In Touch</div>
+        <h2 class="section-title" data-i18n="con_title">Contact Us</h2>
+        <p class="section-desc" data-i18n="con_desc">Reach us via WhatsApp, phone, or email. We respond within minutes.
+        </p>
+      </div>
+      <div class="contact-grid">
+        <!-- Contact Info Cards -->
+        <div class="contact-info-col">
+          <div class="contact-card">
+            <div class="contact-icon wa-icon">
+              <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <div class="contact-card-text">
+              <h4 data-i18n="con_wa">WhatsApp</h4>
+              <p>+91 90485 32576</p>
+              <a href="https://wa.me/919048532576?text=Hello%20Webzone%2C%20I%20need%20help" target="_blank"
+                class="contact-action-btn wa-btn" data-i18n="con_wa_btn">Chat on WhatsApp</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon phone-icon">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <div class="contact-card-text">
+              <h4 data-i18n="con_phone">Phone</h4>
+              <p>+91 90485 32576</p>
+              <a href="tel:+919048532576" class="contact-action-btn phone-btn" data-i18n="con_call">Call Now</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon loc-icon">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div class="contact-card-text">
+              <h4 data-i18n="con_loc">Location</h4>
+              <p data-i18n="con_addr">Kadungallur Brg,<br>Kadungallur, Kerala 673641</p>
+              <a href="https://maps.google.com/?q=WebZone+Online+Service+Centre,+Kadungallur,+Kerala" target="_blank"
+                class="contact-action-btn loc-btn" data-i18n="con_map">View on Map</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon time-icon">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="contact-card-text">
+              <h4 data-i18n="con_hours">Working Hours</h4>
+              <p data-i18n="con_hours_val">Mon – Sat: 9:00 AM – 8:00 PM</p>
+              <p data-i18n="con_hours_sun" style="font-size:12px; color:#999;">Sunday: Closed</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick WhatsApp Form -->
+        <div class="contact-form-col">
+          <div class="wa-form-card">
+            <div class="wa-form-header">
+              <i class="fa-brands fa-whatsapp"></i>
+              <h3 data-i18n="form_title">Send a WhatsApp Message</h3>
+            </div>
+            <p class="wa-form-desc" data-i18n="form_desc">Fill in your details and we'll open WhatsApp with your message
+              ready to send.</p>
+            <form id="contactWaForm">
+              <div class="form-group">
+                <label data-i18n="form_name">Your Name</label>
+                <input type="text" id="cf_name" placeholder="e.g. Mohammed Farhan" required>
+              </div>
+              <div class="form-group">
+                <label data-i18n="form_phone">Phone Number</label>
+                <input type="tel" id="cf_phone" placeholder="+91 90485 32576" required>
+              </div>
+              <div class="form-group">
+                <label data-i18n="form_service">Service You Need</label>
+                <select id="cf_service">
+                  <option value="" data-i18n="form_srv_ph">Select a service...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label data-i18n="form_msg">Your Message</label>
+                <textarea id="cf_msg" rows="3" data-i18n-ph="form_msg_ph"
+                  placeholder="Any specific details..."></textarea>
+              </div>
+              <button type="submit" class="wa-submit-btn">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span data-i18n="form_submit">Send via WhatsApp</span>
+              </button>
+            </form>
+            <!-- Map Embed -->
+            <div class="map-embed">
+              <iframe
+                src="https://maps.google.com/maps?q=WebZone+Online+Service+Centre,+Kadungallur,+Kerala&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                allowfullscreen="" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="footer-top">
+      <div class="container footer-top-inner">
+        <!-- Brand -->
+        <div class="footer-brand-col">
+          <div class="footer-brand">
+            <img src="images/webzone_logo.png" alt="Webzone Logo" class="brand-img-logo">
+          </div>
+          <p class="footer-tagline" data-i18n="footer_tagline">Kerala's trusted WhatsApp-first digital service gateway.
+            Simple, fast, and human.</p>
+          <div class="footer-social">
+            <a href="https://wa.me/919048532576" target="_blank" aria-label="WhatsApp"><i
+                class="fa-brands fa-whatsapp"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <!-- Gov Services -->
+        <div class="footer-col">
+          <h4 data-i18n="footer_gov">Government Services</h4>
+          <ul>
+            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Income Certificate</a></li>
+            <li><a href="#services" onclick="filterServiceAndScroll('gov')">PAN Card</a></li>
+            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Passport Help</a></li>
+            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Voter ID</a></li>
+            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Certificates</a></li>
+          </ul>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4 data-i18n="footer_quick">Quick Links</h4>
+          <ul>
+            <li><a href="#services" data-i18n="nav_services">Services</a></li>
+            <li><a href="#news" data-i18n="nav_news">News</a></li>
+            <li><a href="#about" data-i18n="nav_about">About</a></li>
+            <li><a href="#faq" data-i18n="nav_faq">FAQ</a></li>
+            <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+          <h4 data-i18n="footer_contact">Contact</h4>
+          <ul class="footer-contact-list">
+            <li><i class="fa-brands fa-whatsapp"></i> +91 90485 32576</li>
+            <li><i class="fa-solid fa-phone"></i> +91 90485 32576</li>
+            <li><i class="fa-solid fa-envelope"></i> hello@webzone.in</li>
+            <li><i class="fa-solid fa-location-dot"></i> Kadungallur, Kerala</li>
+            <li><i class="fa-solid fa-clock"></i> 9AM – 8PM (Mon–Sat)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <p data-i18n="footer_copy">© 2025 Webzone Online Service Center. All rights reserved.</p>
+        <div class="footer-wa-btn-wrap">
+          <a href="https://wa.me/919048532576?text=Hello%20Webzone%2C%20I%20need%20a%20service" target="_blank"
+            class="footer-wa-btn">
+            <i class="fa-brands fa-whatsapp"></i> <span data-i18n="footer_wa_cta">Apply via WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== FLOATING WHATSAPP BUTTON ===== -->
+  <a href="https://wa.me/919048532576?text=Hello%20Webzone%2C%20I%20need%20help" target="_blank" class="float-wa"
+    id="floatWa" aria-label="WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="float-wa-tooltip" data-i18n="float_tooltip">Chat with us!</span>
+  </a>
+
+
+
+  <!-- ===== WHATSAPP MODAL ===== -->
+  <div class="wa-modal-overlay" id="waModal">
+    <div class="wa-modal">
+      <div class="wa-modal-head">
+        <div class="wa-modal-icon"><i class="fa-brands fa-whatsapp"></i></div>
+        <div>
+          <h3 id="waModalTitle" data-i18n="wa_modal_title">Apply via WhatsApp</h3>
+          <p id="waModalService" class="wa-modal-service"></p>
+        </div>
+        <button class="wa-modal-close" id="waModalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="wa-modal-body">
+        <p data-i18n="wa_modal_desc">WhatsApp will open with your service request pre-filled. Just add your name and
+          send!</p>
+        <div class="wa-preview" id="waPreview">
+          <!-- Preview generated by JS -->
+        </div>
+        <a href="#" class="wa-modal-btn" id="waModalBtn" target="_blank">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span data-i18n="wa_open">Open WhatsApp & Apply</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>
