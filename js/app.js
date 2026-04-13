@@ -52,12 +52,21 @@ function applyLanguage(lang, reRender = true) {
     if (val && val !== key) el.innerHTML = val;
   });
 
-  // Apply placeholder translations
+  // Update placeholder translations
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
     const key = el.getAttribute('data-i18n-ph');
     const val = t(key);
     if (val && val !== key) el.placeholder = val;
   });
+
+  // Update all lang buttons UI (Desktop pills if any)
+  document.querySelectorAll('.lang-opt').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === lang);
+  });
+  
+  // Update Mobile Navbar Button indicator
+  const mobileLangCode = document.querySelector('#mobileLangBtn .curr-lang-code');
+  if (mobileLangCode) mobileLangCode.textContent = lang.toUpperCase();
 
   if (reRender) {
     renderServices(currentCat);
@@ -89,47 +98,87 @@ function initLangSwitcher() {
   });
 }
 
+
+
 // ============================================================
 //  NAVBAR
 // ============================================================
 function initNavbar() {
-  const navbar = document.getElementById('mainNav');
+  const navbar    = document.getElementById('mainNav');
   const mobileBtn = document.getElementById('mobileMenuBtn');
   const mobileNav = document.getElementById('mobileNav');
-  const menuIcon = document.getElementById('menuIcon');
+  const closeBtn  = document.getElementById('mobileCloseBtn');
+  const backdrop  = document.getElementById('mobileNavBackdrop');
+  const mobileLangBtn = document.getElementById('mobileLangBtn');
 
   // Sticky scroll
   window.addEventListener('scroll', () => {
     navbar?.classList.toggle('scrolled', window.scrollY > 20);
     updateActiveNavLink();
+  }, { passive: true });
+
+  // Drawer open/close helpers
+  const openDrawer = () => {
+    mobileNav?.classList.add('open');
+    backdrop?.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+    mobileBtn?.setAttribute('aria-expanded', 'true');
+  };
+  const closeDrawer = () => {
+    mobileNav?.classList.remove('open');
+    backdrop?.classList.remove('visible');
+    document.body.style.overflow = '';
+    mobileBtn?.setAttribute('aria-expanded', 'false');
+  };
+
+  mobileBtn?.addEventListener('click', openDrawer);
+  closeBtn?.addEventListener('click', closeDrawer);
+  backdrop?.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+  // Close on mobile nav link click
+  document.querySelectorAll('.mobile-nav-link').forEach(link =>
+    link.addEventListener('click', closeDrawer)
+  );
+
+  // Mobile lang quick-cycle button (cycles EN→ML→HI)
+  mobileLangBtn?.addEventListener('click', () => {
+    const langs = ['en', 'ml', 'hi'];
+    const cur = document.documentElement.lang || 'en';
+    const next = langs[(langs.indexOf(cur) + 1) % langs.length];
+    applyLanguage(next);
   });
 
-  // Mobile menu
-  mobileBtn?.addEventListener('click', () => {
-    const isOpen = mobileNav?.classList.toggle('open');
-    if (menuIcon) menuIcon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
-  });
-
-  // Close mobile nav on link click
-  document.querySelectorAll('.mobile-nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileNav?.classList.remove('open');
-      if (menuIcon) menuIcon.className = 'fa-solid fa-bars';
+  // Drawer lang pills (.mdl-pill)
+  document.querySelectorAll('.mdl-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      applyLanguage(pill.dataset.lang);
+      document.querySelectorAll('.mdl-pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.lang === pill.dataset.lang)
+      );
     });
   });
 
-  // Smooth scroll for nav links
+  // Bottom Nav smooth scroll
+  document.querySelectorAll('.bottom-nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      const target = item.getAttribute('data-target');
+      if (target) {
+        e.preventDefault();
+        const el = document.getElementById(target);
+        if (el) window.scrollTo({ top: el.offsetTop - (navbar?.offsetHeight || 60) - 8, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Smooth scroll for all hash nav links
   document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
     const href = link.getAttribute('href');
-    if (href && href.startsWith('#')) {
-      link.addEventListener('click', (e) => {
+    if (href?.startsWith('#')) {
+      link.addEventListener('click', e => {
         e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-          const navH = navbar?.offsetHeight || 70;
-          const top = target.getBoundingClientRect().top + window.scrollY - navH - 8;
-          window.scrollTo({ top, behavior: 'smooth' });
-        }
+        const el = document.querySelector(href);
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (navbar?.offsetHeight || 70) - 8, behavior: 'smooth' });
       });
     }
   });
@@ -138,16 +187,22 @@ function initNavbar() {
 function updateActiveNavLink() {
   const sections = ['home', 'services', 'about', 'faq', 'news', 'contact'];
   const navLinks = document.querySelectorAll('.nav-link');
+  const bottomLinks = document.querySelectorAll('.bottom-nav-item');
   
-  let current = 'services';
+  let current = 'home';
   sections.forEach(id => {
     const el = document.getElementById(id);
-    if (el && window.scrollY >= el.offsetTop - 120) current = id;
+    if (el && window.scrollY >= el.offsetTop - 150) current = id;
   });
 
   navLinks.forEach(link => {
     const href = link.getAttribute('href')?.replace('#', '');
     link.classList.toggle('active-section', href === current);
+  });
+
+  bottomLinks.forEach(link => {
+    const target = link.getAttribute('data-target');
+    link.classList.toggle('active', target === current);
   });
 }
 
@@ -240,6 +295,8 @@ function showSkeletons() {
 // ============================================================
 function renderServices(cat) {
   currentCat = cat;
+
+  const label = document.getElementById('langLabel');
 
   // Update tab states
   document.querySelectorAll('.srv-tab').forEach(tab => {

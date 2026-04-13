@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="meta_title">Webzone Online Service Center | Digital Services near Areekode, Kizhisseri & Kadungalloor</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <title data-i18n="meta_title">Webzone Online Service Center | Digital Services near Areekode, Kizhisseri &
+    Kadungalloor</title>
   <meta name="description"
     content="Webzone Online Service Center provides PAN card, Aadhaar, passport, and certificate services near Kadungalloor, Areekode, Kizhisseri, Vilayil, and nearby areas. Fast, reliable, and trusted digital services.">
   <meta name="keywords"
@@ -53,7 +55,9 @@
   <meta property="og:url" content="https://www.webzonekgr.in">
   <link rel="canonical" href="https://www.webzonekgr.in">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
@@ -62,29 +66,46 @@
 
 <body>
 
+  <!-- Skip to main content (Accessibility / Gov standard) -->
+  <a href="#services" class="skip-link">Skip to Main Content</a>
+
   <!-- ===== NAVBAR ===== -->
-  <header class="navbar" id="mainNav">
-    <!-- Top Bar (Gov Style) -->
+  <header class="navbar" id="mainNav" role="banner">
+
+
+
+    <!-- Top Utility Bar (Gov Style) -->
     <div class="gov-top-bar">
       <div class="gov-top-bar-inner">
         <div class="gov-tag">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span>Official Digital Gateway • Webzone Service Hub</span>
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <span>Official Digital Gateway &nbsp;|&nbsp; Webzone Service Hub</span>
         </div>
         <div class="gov-links">
-          <span>Help Desk: +91 90485 32576</span>
+          <a href="tel:+919048532576" class="gov-helpdesk">
+            <i class="fa-solid fa-headset" aria-hidden="true"></i>
+            <span>Help Desk: +91 90485 32576</span>
+          </a>
+          <span class="gov-sep">|</span>
+          <span class="gov-hours">
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            Mon–Sat: 9AM–8PM
+          </span>
         </div>
       </div>
     </div>
 
-    <div class="nav-container">
+    <!-- Main Nav Bar -->
+    <div class="nav-container" role="navigation" aria-label="Main Navigation">
+
       <!-- Brand -->
-      <a href="#" class="nav-brand" onclick="scrollToTop()">
-        <img src="images/webzone_logo.png" alt="Webzone Logo" class="brand-img-logo">
+      <a href="#home" class="nav-brand" onclick="scrollToTop()" aria-label="Webzone Home">
+        <img src="images/webzone_logo.png" alt="Webzone Online Service Center" class="brand-img-logo">
       </a>
 
-      <!-- Center Nav -->
-      <nav class="nav-links" id="navLinks">
+      <!-- Desktop Nav Links -->
+      <nav class="nav-links" id="navLinks" aria-label="Site Navigation">
+        <a href="#home" class="nav-link" data-i18n="nav_home">Home</a>
         <a href="#services" class="nav-link" data-i18n="nav_services">Services</a>
         <a href="#about" class="nav-link" data-i18n="nav_about">About</a>
         <a href="#news" class="nav-link" data-i18n="nav_news">News</a>
@@ -93,59 +114,140 @@
 
       <!-- Right Actions -->
       <div class="nav-actions">
-        <!-- Search -->
-        <div class="search-wrap" id="searchWrap">
-          <button class="search-toggle" id="searchToggle" aria-label="Search">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-          <div class="search-box" id="searchBox">
-            <input type="text" id="searchInput" data-i18n-ph="search_ph" placeholder="Search services..."
-              autocomplete="off">
-            <div class="search-results" id="searchResults"></div>
+
+        <!-- Desktop Only -->
+        <div class="desktop-only-actions">
+
+          <!-- Search -->
+          <div class="search-wrap" id="searchWrap">
+            <button class="search-toggle" id="searchToggle" aria-label="Search services">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <div class="search-box" id="searchBox" role="search">
+              <input type="text" id="searchInput" data-i18n-ph="search_ph" placeholder="Search services..."
+                autocomplete="off" aria-label="Search services">
+              <div class="search-results" id="searchResults" role="listbox"></div>
+            </div>
           </div>
+
+          <!-- Language Switcher -->
+          <div class="lang-switch" id="langSwitch">
+            <button class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false"
+              aria-label="Select language">
+              <i class="fa-solid fa-globe" aria-hidden="true"></i>
+              <span id="langLabel">EN</span>
+              <i class="fa-solid fa-chevron-down nav-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="lang-menu" id="langMenu" role="listbox">
+              <button class="lang-opt active" data-lang="en" role="option">🇬🇧 English</button>
+              <button class="lang-opt" data-lang="ml" role="option">🇮🇳 മലയാളം</button>
+              <button class="lang-opt" data-lang="hi" role="option">🇮🇳 हिंदी</button>
+            </div>
+          </div>
+
+          <!-- WhatsApp CTA -->
+          <a href="https://wa.me/919048532576" target="_blank" rel="noopener" class="btn-whatsapp-nav"
+            aria-label="Contact on WhatsApp">
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            <span data-i18n="nav_whatsapp">WhatsApp</span>
+          </a>
         </div>
 
-        <!-- Language Switcher -->
-        <div class="lang-switch" id="langSwitch">
-          <button class="lang-btn" id="langBtn">
-            <i class="fa-solid fa-globe"></i>
-            <span id="langLabel">EN</span>
-            <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i>
+        <!-- Mobile Header Actions -->
+        <div class="mobile-header-actions">
+          <button class="mobile-lang-btn" id="mobileLangBtn" aria-label="Switch language">
+            <i class="fa-solid fa-globe" aria-hidden="true"></i>
+            <span class="curr-lang-code">EN</span>
           </button>
-          <div class="lang-menu" id="langMenu">
-            <button class="lang-opt active" data-lang="en" id="lang_en">🇬🇧 English</button>
-            <button class="lang-opt" data-lang="ml" id="lang_ml">🇮🇳 മലയാളം</button>
-            <button class="lang-opt" data-lang="hi" id="lang_hi">🇮🇳 हिंदी</button>
-          </div>
+          <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false"
+            aria-controls="mobileNav">
+            <i class="fa-solid fa-bars" id="menuIcon" aria-hidden="true"></i>
+          </button>
         </div>
 
-        <!-- WhatsApp CTA -->
-        <a href="https://wa.me/919048532576?text=Hello%2C%20I%20need%20a%20digital%20service" target="_blank"
-          class="btn-whatsapp-nav" id="navWhatsappBtn">
-          <i class="fa-brands fa-whatsapp"></i>
-          <span data-i18n="nav_whatsapp">WhatsApp</span>
-        </a>
-
-        <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
-          <i class="fa-solid fa-bars" id="menuIcon"></i>
-        </button>
       </div>
     </div>
 
-    <!-- Mobile Nav -->
-    <div class="mobile-nav" id="mobileNav">
-      <a href="#services" class="mobile-nav-link" data-i18n="nav_services">Services</a>
-      <a href="#about" class="mobile-nav-link" data-i18n="nav_about">About</a>
-      <a href="#news" class="mobile-nav-link" data-i18n="nav_news">News</a>
-      <a href="#contact" class="mobile-nav-link" data-i18n="nav_contact">Contact</a>
-      <a href="https://wa.me/919048532576" target="_blank" class="mobile-nav-link mobile-wa">
-        <i class="fa-brands fa-whatsapp"></i> WhatsApp Us
-      </a>
+    <!-- Mobile Nav Drawer -->
+    <div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation menu">
+
+      <!-- Drawer Header -->
+      <div class="mobile-nav-head">
+        <img src="images/webzone_logo.png" alt="Webzone" class="mobile-logo">
+        <button class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Gov Status Strip inside Drawer -->
+      <div class="mobile-gov-strip">
+        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+        <span>Official Digital Gateway</span>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="mobile-nav-links" aria-label="Mobile Navigation">
+        <a href="#home" class="mobile-nav-link" data-i18n="nav_home">
+          <span class="mnl-icon"><i class="fa-solid fa-house" aria-hidden="true"></i></span>
+          <span class="mnl-text">Home</span>
+          <i class="fa-solid fa-chevron-right mnl-arrow" aria-hidden="true"></i>
+        </a>
+        <a href="#services" class="mobile-nav-link" data-i18n="nav_services">
+          <span class="mnl-icon"><i class="fa-solid fa-grid-2" aria-hidden="true"></i></span>
+          <span class="mnl-text">Services</span>
+          <i class="fa-solid fa-chevron-right mnl-arrow" aria-hidden="true"></i>
+        </a>
+        <a href="#about" class="mobile-nav-link" data-i18n="nav_about">
+          <span class="mnl-icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></span>
+          <span class="mnl-text">About</span>
+          <i class="fa-solid fa-chevron-right mnl-arrow" aria-hidden="true"></i>
+        </a>
+        <a href="#news" class="mobile-nav-link" data-i18n="nav_news">
+          <span class="mnl-icon"><i class="fa-solid fa-newspaper" aria-hidden="true"></i></span>
+          <span class="mnl-text">News</span>
+          <i class="fa-solid fa-chevron-right mnl-arrow" aria-hidden="true"></i>
+        </a>
+        <a href="#contact" class="mobile-nav-link" data-i18n="nav_contact">
+          <span class="mnl-icon"><i class="fa-solid fa-message-dots" aria-hidden="true"></i></span>
+          <span class="mnl-text">Contact</span>
+          <i class="fa-solid fa-chevron-right mnl-arrow" aria-hidden="true"></i>
+        </a>
+      </nav>
+
+      <!-- Language Switcher inside Drawer -->
+      <div class="mobile-drawer-lang">
+        <div class="mdl-label">
+          <i class="fa-solid fa-globe" aria-hidden="true"></i>
+          <span>Select Language</span>
+        </div>
+        <div class="mdl-pills">
+          <button class="mdl-pill active" data-lang="en">🇬🇧 EN</button>
+          <button class="mdl-pill" data-lang="ml">🇮🇳 ML</button>
+          <button class="mdl-pill" data-lang="hi">🇮🇳 HI</button>
+        </div>
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="mobile-nav-footer">
+        <p data-i18n="nav_help">Need Help?</p>
+        <a href="tel:+919048532576" class="mobile-contact-item">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i> +91 90485 32576
+        </a>
+        <a href="https://wa.me/919048532576" target="_blank" rel="noopener" class="mobile-wa-cta">
+          <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+          <span data-i18n="nav_whatsapp">WhatsApp Us</span>
+        </a>
+      </div>
+
     </div>
+    <!-- Mobile Nav Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
+
   </header>
 
+
   <!-- ===== ENHANCED HERO SLIDER ===== -->
+
   <section class="hero-section" id="home">
     <div class="hero-slider-wrap">
       <div class="hero-slider" id="heroSlider">
@@ -286,7 +388,7 @@
 
       <div class="show-more-wrap" id="showMoreWrap" style="display: none; text-align: center; margin-top: 40px;">
         <button class="btn-hero-primary" id="showMoreBtn">
-            <span data-i18n="show_more">Show More Services</span> <i class="fa-solid fa-chevron-down"></i>
+          <span data-i18n="show_more">Show More Services</span> <i class="fa-solid fa-chevron-down"></i>
         </button>
       </div>
 
@@ -339,7 +441,8 @@
             <p class="about-p" data-i18n="about_p3">At Webzone, simplicity is our core strength. We handle the paperwork
               and technical hurdles so you don't have to, providing a smooth and dependable experience that people can
               rely on.</p>
-            <p class="about-seo" data-i18n="about_seo" style="margin-top: 20px; font-weight: 500; font-size: 14px; color: var(--primary);"></p>
+            <p class="about-seo" data-i18n="about_seo"
+              style="margin-top: 20px; font-weight: 500; font-size: 14px; color: var(--primary);"></p>
           </div>
 
           <div class="about-tagline" data-i18n="about_tagline">Built on Trust. Focused on Service.</div>
@@ -399,23 +502,31 @@
     <div class="container">
       <div class="stats-grid reveal-stagger">
         <div class="stat-item">
-          <div class="stat-num" data-count="5000">0</div>
-          <div class="stat-plus">+</div>
+          <div class="stat-num-row">
+            <div class="stat-num" data-count="5000">0</div>
+            <div class="stat-plus">+</div>
+          </div>
           <div class="stat-label" data-i18n="stat1">Services Completed</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num" data-count="20">0</div>
-          <div class="stat-plus">+</div>
+          <div class="stat-num-row">
+            <div class="stat-num" data-count="20">0</div>
+            <div class="stat-plus">+</div>
+          </div>
           <div class="stat-label" data-i18n="stat2">Service Categories</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num" data-count="98">0</div>
-          <div class="stat-plus">%</div>
+          <div class="stat-num-row">
+            <div class="stat-num" data-count="98">0</div>
+            <div class="stat-plus">%</div>
+          </div>
           <div class="stat-label" data-i18n="stat3">Customer Satisfaction</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num" data-count="3">0</div>
-          <div class="stat-plus"> yrs</div>
+          <div class="stat-num-row">
+            <div class="stat-num" data-count="8">0</div>
+            <div class="stat-plus">yrs</div>
+          </div>
           <div class="stat-label" data-i18n="stat4">Years of Service</div>
         </div>
       </div>
@@ -443,6 +554,7 @@
         <div class="section-badge" data-i18n="news_badge">Latest Updates</div>
         <h2 class="section-title" data-i18n="news_title">News & Events</h2>
         <p class="section-desc" data-i18n="news_desc">Stay updated with the latest service announcements and events</p>
+        <div class="scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe to view more</div>
       </div>
       <div class="news-grid reveal-stagger" id="newsGrid" data-reveal="fade-up">
         <div class="news-loading">
@@ -562,7 +674,7 @@
         <!-- Brand -->
         <div class="footer-brand-col">
           <div class="footer-brand">
-            <img src="images/webzone_logo.png" alt="Webzone Logo" class="brand-img-logo">
+            <img src="images/webzone_logo_light.png" alt="Webzone Logo" class="brand-img-logo">
           </div>
           <p class="footer-tagline" data-i18n="footer_tagline">Kerala's trusted WhatsApp-first digital service gateway.
             Simple, fast, and human.</p>
@@ -575,32 +687,37 @@
           </div>
         </div>
 
-        <!-- Gov Services -->
-        <div class="footer-col">
-          <h4 data-i18n="footer_gov">Government Services</h4>
-          <ul>
-            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Income Certificate</a></li>
-            <li><a href="#services" onclick="filterServiceAndScroll('gov')">PAN Card</a></li>
-            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Passport Help</a></li>
-            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Voter ID</a></li>
-            <li><a href="#services" onclick="filterServiceAndScroll('gov')">Certificates</a></li>
-          </ul>
-        </div>
+        <!-- Gov Services + Quick Links: side by side on mobile -->
+        <div class="footer-links-row">
 
-        <!-- Quick Links -->
-        <div class="footer-col">
-          <h4 data-i18n="footer_quick">Quick Links</h4>
-          <ul>
-            <li><a href="#services" data-i18n="nav_services">Services</a></li>
-            <li><a href="#news" data-i18n="nav_news">News</a></li>
-            <li><a href="#about" data-i18n="nav_about">About</a></li>
-            <li><a href="#faq" data-i18n="nav_faq">FAQ</a></li>
-            <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
-          </ul>
-        </div>
+          <!-- Gov Services -->
+          <div class="footer-col">
+            <h4 data-i18n="footer_gov">Government Services</h4>
+            <ul>
+              <li><a href="#services" onclick="filterServiceAndScroll('gov')">Income Certificate</a></li>
+              <li><a href="#services" onclick="filterServiceAndScroll('gov')">PAN Card</a></li>
+              <li><a href="#services" onclick="filterServiceAndScroll('gov')">Passport Help</a></li>
+              <li><a href="#services" onclick="filterServiceAndScroll('gov')">Voter ID</a></li>
+              <li><a href="#services" onclick="filterServiceAndScroll('gov')">Certificates</a></li>
+            </ul>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="footer-col">
+            <h4 data-i18n="footer_quick">Quick Links</h4>
+            <ul>
+              <li><a href="#services" data-i18n="nav_services">Services</a></li>
+              <li><a href="#news" data-i18n="nav_news">News</a></li>
+              <li><a href="#about" data-i18n="nav_about">About</a></li>
+              <li><a href="#faq" data-i18n="nav_faq">FAQ</a></li>
+              <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+            </ul>
+          </div>
+
+        </div><!-- /.footer-links-row -->
 
         <!-- Contact -->
-        <div class="footer-col">
+        <div class="footer-col footer-contact-col">
           <h4 data-i18n="footer_contact">Contact</h4>
           <ul class="footer-contact-list">
             <li><i class="fa-brands fa-whatsapp"></i> +91 90485 32576</li>

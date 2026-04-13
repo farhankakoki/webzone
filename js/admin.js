@@ -3,24 +3,54 @@
 // Handles News CRUD and Analytics
 // ============================================================
 
-const ADMIN_PASS = 'webzone2025'; // Default password
+// Password is stored as SHA-256 hash — never in plain text
+// Hash of: webzone2026
+const ADMIN_HASH = '2c252a6baa9d3a00670b1eccb98a913f57e817620dcf31dddbb453455a8020b3';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(str)
+  );
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if already logged in via session
     if (sessionStorage.getItem('wz_admin_auth') === 'true') {
         showPanel();
     }
+    // Allow Enter key to submit
+    document.getElementById('adminPass')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') checkLogin();
+    });
 });
 
-function checkLogin() {
-    const input = document.getElementById('adminPass').value;
+async function checkLogin() {
+    const input = document.getElementById('adminPass').value.trim();
     const errorEl = document.getElementById('loginError');
-    
-    if (input === ADMIN_PASS) {
+    const btn = document.getElementById('loginBtn');
+
+    if (!input) return;
+
+    // Show loading state
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+
+    const inputHash = await sha256(input);
+
+    if (inputHash === ADMIN_HASH) {
         sessionStorage.setItem('wz_admin_auth', 'true');
-        showPanel();
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Access Granted';
+        setTimeout(showPanel, 400);
     } else {
-        errorEl.style.display = 'block';
+        errorEl.style.display = 'flex';
+        btn.disabled = false;
+        btn.innerHTML = 'Login to Dashboard';
+        // Shake the card
+        document.querySelector('.admin-login-card').classList.add('shake');
+        setTimeout(() => document.querySelector('.admin-login-card').classList.remove('shake'), 500);
     }
 }
 
@@ -36,16 +66,16 @@ function showPanel() {
 }
 
 function switchTab(tab) {
-    document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-btn').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
-    
+
     if (tab === 'news') {
         document.getElementById('newsTab').style.display = 'block';
-        document.querySelector('[onclick="switchTab(\'news\')"]').classList.add('active');
+        document.getElementById('tabBtnNews').classList.add('active');
         renderNewsTable();
     } else if (tab === 'stats') {
         document.getElementById('statsTab').style.display = 'block';
-        document.querySelector('[onclick="switchTab(\'stats\')"]').classList.add('active');
+        document.getElementById('tabBtnStats').classList.add('active');
         renderStats();
     }
 }
@@ -66,7 +96,7 @@ function saveNewsList(list) {
 function renderNewsTable() {
     const news = getNewsList();
     const tbody = document.getElementById('newsTableBody');
-    
+
     if (news.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:40px; color:#64748b;">No news posts yet. Click "Add New Post" to start.</td></tr>`;
         return;
@@ -102,7 +132,7 @@ function closeNewsModal() {
 
 function resetModal() {
     document.getElementById('news_title_in').value = '';
-    document.getElementById('news_date_in').value = new Date().toLocaleDateString('en-IN', { year:'numeric', month:'long', day:'numeric'});
+    document.getElementById('news_date_in').value = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
     document.getElementById('news_img_in').value = '';
     document.getElementById('news_desc_in').value = '';
     document.getElementById('news_link_in').value = '';
@@ -181,7 +211,7 @@ function editNews(idx) {
 
     document.getElementById('modalTitle').innerText = 'Edit News Post';
     document.getElementById('editIdx').value = idx;
-    
+
     document.getElementById('news_title_in').value = item.title;
     document.getElementById('news_date_in').value = item.date;
     document.getElementById('news_img_in').value = item.img || '';
@@ -216,7 +246,7 @@ function wrapText(tag) {
     const end = area.selectionEnd;
     const text = area.value;
     const selected = text.substring(start, end);
-    
+
     if (tag === 'br') {
         area.value = text.substring(0, start) + '<br>' + text.substring(end);
     } else {
@@ -231,7 +261,7 @@ function wrapColor(color) {
     const end = area.selectionEnd;
     const text = area.value;
     const selected = text.substring(start, end);
-    
+
     area.value = text.substring(0, start) + '<span style="color:' + color + ';">' + selected + '</span>' + text.substring(end);
     area.focus();
 }
@@ -242,7 +272,7 @@ function wrapBg(color) {
     const end = area.selectionEnd;
     const text = area.value;
     const selected = text.substring(start, end);
-    
+
     area.value = text.substring(0, start) + '<span style="background-color:' + color + ';">' + selected + '</span>' + text.substring(end);
     area.focus();
 }
@@ -253,7 +283,7 @@ function wrapStyle(style) {
     const end = area.selectionEnd;
     const text = area.value;
     const selected = text.substring(start, end);
-    
+
     area.value = text.substring(0, start) + '<div style="' + style + '">' + selected + '</div>' + text.substring(end);
     area.focus();
 }
@@ -264,7 +294,7 @@ function wrapList() {
     const end = area.selectionEnd;
     const text = area.value;
     const selected = text.substring(start, end);
-    
+
     area.value = text.substring(0, start) + '• ' + selected + text.substring(end);
     area.focus();
 }
@@ -275,7 +305,7 @@ function wrapList() {
 
 function renderStats() {
     const stats = JSON.parse(localStorage.getItem('wz_stats') || '{"views":0, "clicks":0, "services":{}, "langs":{}}');
-    
+
     // Top Cards
     document.getElementById('stat_views').innerText = stats.views.toLocaleString();
     document.getElementById('stat_clicks').innerText = stats.clicks.toLocaleString();
@@ -284,7 +314,7 @@ function renderStats() {
 
     // Services
     const srvBox = document.getElementById('servicesDistribution');
-    const sortedSrv = Object.entries(stats.services).sort((a,b) => b[1] - a[1]);
+    const sortedSrv = Object.entries(stats.services).sort((a, b) => b[1] - a[1]);
     if (sortedSrv.length === 0) {
         srvBox.innerHTML = '<p style="color:#64748b; padding:20px; text-align:center;">No service clicks tracked yet.</p>';
     } else {
@@ -306,7 +336,7 @@ function renderStats() {
 
     // Languages
     const langBox = document.getElementById('langDistribution');
-    const sortedLang = Object.entries(stats.langs).sort((a,b) => b[1] - a[1]);
+    const sortedLang = Object.entries(stats.langs).sort((a, b) => b[1] - a[1]);
     if (sortedLang.length === 0) {
         langBox.innerHTML = '<p style="color:#64748b; padding:20px; text-align:center;">No language data.</p>';
     } else {

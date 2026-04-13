@@ -12,6 +12,8 @@ const i18n = {
     nav_contact: 'Contact',
     nav_faq: 'FAQ',
     nav_whatsapp: 'WhatsApp',
+    nav_home: 'Home',
+    nav_help: 'How can we help you?',
 
     hero_badge: 'Trusted Digital Gateway',
     hero1_title: 'All Online Services\nUnder One Roof',
@@ -136,6 +138,8 @@ const i18n = {
     nav_contact: 'ബന്ധപ്പെടുക',
     nav_faq: 'FAQ',
     nav_whatsapp: 'WhatsApp',
+    nav_home: 'ഹോം',
+    nav_help: 'എങ്ങനെ സഹായിക്കാം?',
 
     hero_badge: 'വിശ്വസ്ത ഡിജിറ്റൽ ഗേറ്റ്‌വേ',
     hero1_title: 'എല്ലാ ഓൺലൈൻ സേവനങ്ങളും\nഒരു കൂരയ്ക്കു കീഴിൽ',
@@ -260,6 +264,8 @@ const i18n = {
     nav_contact: 'संपर्क',
     nav_faq: 'FAQ',
     nav_whatsapp: 'WhatsApp',
+    nav_home: 'होम',
+    nav_help: 'हम आपकी कैसे मदद करें?',
 
     hero_badge: 'विश्वसनीय डिजिटल गेटवे',
     hero1_title: 'सभी ऑनलाइन सेवाएं\nएक छत के नीचे',
