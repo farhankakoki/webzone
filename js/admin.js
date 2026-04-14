@@ -84,17 +84,16 @@ function switchTab(tab) {
 //  NEWS MANAGEMENT
 // ============================================================
 
-function getNewsList() {
+async function getNewsList() {
+    if (window.fb_getNewsList) {
+        return await window.fb_getNewsList();
+    }
     const saved = localStorage.getItem('wz_news_list');
     return saved ? JSON.parse(saved) : [];
 }
 
-function saveNewsList(list) {
-    localStorage.setItem('wz_news_list', JSON.stringify(list));
-}
-
-function renderNewsTable() {
-    const news = getNewsList();
+async function renderNewsTable() {
+    const news = await getNewsList();
     const tbody = document.getElementById('newsTableBody');
 
     if (news.length === 0) {
@@ -111,8 +110,8 @@ function renderNewsTable() {
             <td>${item.date}</td>
             <td>
                 <div class="news-actions">
-                    <button class="btn-admin" style="background:#f1f5f9;" onclick="editNews(${idx})">Edit</button>
-                    <button class="btn-admin btn-danger" onclick="deleteNews(${idx})">Delete</button>
+                    <button class="btn-admin" style="background:#f1f5f9;" onclick="editNews('${item.id || idx}', ${idx})">Edit</button>
+                    <button class="btn-admin btn-danger" onclick="deleteNews('${item.id || idx}', ${idx})">Delete</button>
                 </div>
             </td>
         </tr>
@@ -122,6 +121,7 @@ function renderNewsTable() {
 function showAddNewsModal() {
     document.getElementById('modalTitle').innerText = 'Add News Post';
     document.getElementById('editIdx').value = '-1';
+    document.getElementById('editDbId').value = '';
     resetModal();
     document.getElementById('newsModal').style.display = 'flex';
 }
@@ -180,60 +180,91 @@ function compressImage(src, callback) {
     };
 }
 
-function saveNews() {
-    const title = document.getElementById('news_title_in').value;
-    const date = document.getElementById('news_date_in').value;
-    const img = document.getElementById('news_img_in').value;
-    const desc = document.getElementById('news_desc_in').value;
-    const link = document.getElementById('news_link_in').value;
-    const idx = parseInt(document.getElementById('editIdx').value);
+async function saveNews() {
+    try {
+        const title = document.getElementById('news_title_in').value;
+        const date = document.getElementById('news_date_in').value;
+        const img = document.getElementById('news_img_in').value;
+        const desc = document.getElementById('news_desc_in').value;
+        const link = document.getElementById('news_link_in').value;
+        
+        const idxElem = document.getElementById('editIdx');
+        const dbIdElem = document.getElementById('editDbId');
+        
+        const idx = idxElem ? parseInt(idxElem.value) : -1;
+        const dbId = dbIdElem ? dbIdElem.value : '';
 
-    if (!title || !desc) return alert('Title and Description are required.');
+        if (!title || !desc) return alert('Title and Description are required.');
 
-    const list = getNewsList();
-    const newItem = { title, date, img, desc, link };
+        const newItem = { title, date, img, desc, link };
+        
+        // Show saving status safely
+        const titleElem = document.getElementById('modalTitle');
+        if (titleElem) titleElem.innerText = "Saving to Database...";
 
-    if (idx === -1) {
-        list.unshift(newItem); // Add to top
-    } else {
-        list[idx] = newItem;
+        // Create a safety timeout
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("Network timeout! Your Ad-Blocker/Firewall may be blocking Firebase, or the connection is too slow. The post might still save in the background once connected.")), 8000)
+        );
+
+        if (idx === -1 || isNaN(idx)) {
+            if (window.fb_addNews) {
+                await Promise.race([window.fb_addNews(newItem), timeoutPromise]);
+            }
+        } else {
+            if (window.fb_updateNews) {
+                await Promise.race([window.fb_updateNews(dbId || String(idx), newItem, idx), timeoutPromise]);
+            }
+        }
+
+        closeNewsModal();
+        renderNewsTable();
+    } catch (error) {
+        console.error("Save Post Error:", error);
+        alert("An error occurred while saving: " + error.message);
+        closeNewsModal();
     }
-
-    saveNewsList(list);
-    closeNewsModal();
-    renderNewsTable();
 }
 
-function editNews(idx) {
-    const list = getNewsList();
-    const item = list[idx];
-    if (!item) return;
+async function editNews(id, idx) {
+    try {
+        const list = await getNewsList();
+        const item = list[idx];
+        if (!item) return;
 
-    document.getElementById('modalTitle').innerText = 'Edit News Post';
-    document.getElementById('editIdx').value = idx;
+        document.getElementById('modalTitle').innerText = 'Edit News Post';
+        if (document.getElementById('editIdx')) document.getElementById('editIdx').value = idx;
+        if (document.getElementById('editDbId')) document.getElementById('editDbId').value = id;
 
-    document.getElementById('news_title_in').value = item.title;
-    document.getElementById('news_date_in').value = item.date;
-    document.getElementById('news_img_in').value = item.img || '';
-    document.getElementById('news_desc_in').value = item.desc;
-    document.getElementById('news_link_in').value = item.link || '';
+        document.getElementById('news_title_in').value = item.title;
+        document.getElementById('news_date_in').value = item.date;
+        document.getElementById('news_img_in').value = item.img || '';
+        document.getElementById('news_desc_in').value = item.desc;
+        document.getElementById('news_link_in').value = item.link || '';
 
-    if (item.img) {
-        document.getElementById('previewEl').src = item.img;
-        document.getElementById('imgPreview').style.display = 'block';
-    } else {
-        document.getElementById('imgPreview').style.display = 'none';
+        const preview = document.getElementById('imgPreview');
+        if (item.img && preview) {
+            document.getElementById('previewEl').src = item.img;
+            preview.style.display = 'block';
+        } else if (preview) {
+            preview.style.display = 'none';
+        }
+
+        document.getElementById('newsModal').style.display = 'flex';
+    } catch(e) {
+        console.error("Error opening edit modal:", e);
     }
-
-    document.getElementById('newsModal').style.display = 'flex';
 }
 
-function deleteNews(idx) {
+async function deleteNews(id, idx) {
     if (!confirm('Are you sure you want to delete this post?')) return;
-    const list = getNewsList();
-    list.splice(idx, 1);
-    saveNewsList(list);
-    renderNewsTable();
+    try {
+        if (window.fb_deleteNews) await window.fb_deleteNews(String(id), idx);
+        renderNewsTable();
+    } catch(e) {
+        console.error("Delete Error", e);
+        alert("Failed to delete post: " + e.message);
+    }
 }
 
 // ============================================================

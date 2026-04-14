@@ -415,12 +415,16 @@ function openWAModal(serviceId) {
   if (btn) btn.href = waUrl;
 
   modal?.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.classList.add('no-scroll');
+  document.documentElement.classList.add('no-scroll');
 }
 
 function closeWAModal() {
   document.getElementById('waModal')?.classList.remove('open');
-  document.body.style.overflow = '';
+  if (!document.getElementById('newsDetailModal')?.classList.contains('open') && !document.getElementById('imageLightbox')?.classList.contains('open')) {
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
+  }
 }
 
 document.getElementById('waModalClose')?.addEventListener('click', closeWAModal);
@@ -478,18 +482,35 @@ function toggleFAQ(idx) {
 // ============================================================
 const BLOGGER_FEED_URL = 'https://webzoneonlineservicecenter.blogspot.com/feeds/posts/default?alt=json&max-results=6';
 
+window.allNewsItems = [];
+
 async function fetchNews() {
   const grid = document.getElementById('newsGrid');
   if (!grid) return;
 
-  // 1. Check for Local Management News (from Admin Portal)
-  const localNews = localStorage.getItem('wz_news_list');
-  if (localNews) {
-    const newsArr = JSON.parse(localNews);
-    if (newsArr.length > 0) {
-      grid.innerHTML = newsArr.slice(0, 6).map(n => {
+  let combinedNewsHtml = '';
+  // reset on fetch
+  window.allNewsItems = [];
+  let newsIdx = 0;
+
+  // 1. Check for Local Management News (from Admin Portal / Database)
+  let dbNews = [];
+  if (window.fb_getNewsList) {
+      try {
+        dbNews = await window.fb_getNewsList();
+      } catch(e) { console.warn("Failed reading FB news", e); }
+  } else {
+      const ls = localStorage.getItem('wz_news_list');
+      if (ls) dbNews = JSON.parse(ls);
+  }
+
+  if (dbNews && dbNews.length > 0) {
+      combinedNewsHtml += dbNews.slice(0, 6).map(n => {
+        n._id = newsIdx++;
+        window.allNewsItems.push(n);
+
         const imgHtml = n.img 
-          ? `<div class="news-img-wrap"><img src="${n.img}" class="news-img" alt="${n.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          ? `<div class="news-img-wrap"><img src="${n.img}" class="news-img" alt="News Image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
              <div class="news-img-placeholder" style="display:none;">📰</div></div>`
           : `<div class="news-img-wrap"><div class="news-img-placeholder">📰</div></div>`;
           
@@ -499,61 +520,15 @@ async function fetchNews() {
             <div class="news-body">
               <div class="news-date">${n.date}</div>
               <h3 class="news-title">${n.title}</h3>
-              <div class="news-excerpt">${n.desc}</div>
-              <a href="${n.link || '#'}" target="_blank" rel="noopener" class="news-link">${t('news_read')}</a>
+              <div class="news-excerpt" style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">${n.desc.replace(/<[^>]+>/g, '')}</div>
+              <button onclick="openNewsModal(${n._id})" class="news-link btn-admin" style="background:transparent; border:none; padding:0; font-size:14px; font-weight:600; cursor:pointer;">${t('news_read')}</button>
             </div>
           </div>
         `;
       }).join('');
-      return;
-    }
   }
 
-  // Fallback news data (shown when Blogger feed is unavailable)
-  const fallbackNews = [
-    {
-      title: 'Official Passport Verification Assistance — Same Week Processing',
-      date: 'April 10, 2025',
-      excerpt: 'Need urgent passport? Our professional assistance gets your application submitted correctly within 24 hours.',
-      link: 'https://wa.me/919048532576?text=Hello%2C%20I%20need%20Passport%20help',
-      emoji: '🛂'
-    },
-    {
-      title: 'PAN Card Corrections — Fast & Easy Process',
-      date: 'April 5, 2025',
-      excerpt: 'Error in your PAN card? We help you correct names, dates, and addresses with minimal paperwork.',
-      link: 'https://wa.me/919048532576?text=Hello%2C%20I%20need%20PAN%20card%20correction',
-      emoji: '📋'
-    },
-    {
-      title: 'Register for Central/State Scholarships Today',
-      date: 'March 28, 2025',
-      excerpt: 'National and State scholarship applications are open. We help students with the entire digital process.',
-      link: 'https://wa.me/919048532576?text=Hello%2C%20I%20need%20Scholarship%20help',
-      emoji: '🎓'
-    },
-    {
-      title: 'KSEB Electricity Bill Payment — Secure & Instant',
-      date: 'March 20, 2025',
-      excerpt: 'Skip the long queues at the office. Pay all your utility bills online instantly through our gateway.',
-      link: 'https://wa.me/919048532576?text=Hello%2C%20I%20need%20bill%20payment%20help',
-      emoji: '⚡'
-    },
-    {
-      title: 'New: Voter ID Enrollment & Correction Active',
-      date: 'March 15, 2025',
-      excerpt: 'Apply for a new Voter ID or update details on your existing card. Quick assistance via WhatsApp.',
-      link: 'https://wa.me/919048532576?text=Hello%2C%20I%20need%20Voter%20ID%20help',
-      emoji: '🆕'
-    },
-    {
-      title: 'Life Certificate (Jeevan Pramaan) Assistance',
-      date: 'March 12, 2025',
-      excerpt: 'Pensioners can now submit Life Certificates digitally. We provide full setup and submission support.',
-      link: 'https://wa.me/919048532576?text=Hello%2C%20I%20need%20Life%20Certificate%20help',
-      emoji: '🔒'
-    }
-  ];
+
 
   try {
     const response = await fetch(BLOGGER_FEED_URL, { signal: AbortSignal.timeout(6000) });
@@ -564,16 +539,20 @@ async function fetchNews() {
     
     if (entries.length === 0) throw new Error('No entries');
 
-    grid.innerHTML = entries.slice(0, 6).map(entry => {
+    const bloggerHtml = entries.slice(0, 6).map(entry => {
       const title = entry.title?.$t || 'Article';
       const link = entry.link?.find(l => l.rel === 'alternate')?.href || '#';
       const date = new Date(entry.published?.$t || Date.now()).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
-      const summary = entry.summary?.$t?.replace(/<[^>]+>/g, '').substring(0, 120) + '...' || '';
-      
+      const summary = entry.summary?.$t || entry.content?.$t || '';
       const thumb = entry?.['media$thumbnail']?.url || null;
+      
+      const n = { title, date, desc: summary, link, img: thumb };
+      n._id = newsIdx++;
+      window.allNewsItems.push(n);
+
       const imgHtml = thumb
-        ? `<img src="${thumb}" class="news-img" alt="${title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=news-img-placeholder>📰</div>'">`
-        : `<div class="news-img-placeholder">📰</div>`;
+        ? `<div class="news-img-wrap"><img src="${thumb}" class="news-img" alt="Blogger post" loading="lazy" onerror="this.parentNode.innerHTML='<div class=news-img-placeholder>📰</div>'"></div>`
+        : `<div class="news-img-wrap"><div class="news-img-placeholder">📰</div></div>`;
 
       return `
         <div class="news-card">
@@ -581,27 +560,104 @@ async function fetchNews() {
           <div class="news-body">
             <div class="news-date">${date}</div>
             <h3 class="news-title">${title}</h3>
-            <p class="news-excerpt">${summary}</p>
-            <a href="${link}" target="_blank" rel="noopener" class="news-link">${t('news_read')}</a>
+            <div class="news-excerpt" style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">${summary.replace(/<[^>]+>/g, '').substring(0, 120)}...</div>
+            <button onclick="openNewsModal(${n._id})" class="news-link btn-admin" style="background:transparent; border:none; padding:0; font-size:14px; font-weight:600; cursor:pointer;">${t('news_read')}</button>
           </div>
         </div>
       `;
     }).join('');
 
+    grid.innerHTML = combinedNewsHtml + bloggerHtml;
+
   } catch (err) {
-    grid.innerHTML = fallbackNews.map(n => `
-      <div class="news-card">
-        <div class="news-img-placeholder">${n.emoji}</div>
-        <div class="news-body">
-          <div class="news-date">${n.date}</div>
-          <h3 class="news-title">${n.title}</h3>
-          <p class="news-excerpt">${n.excerpt}</p>
-          <a href="${n.link}" target="_blank" rel="noopener" class="news-link">Read More →</a>
-        </div>
-      </div>
-    `).join('');
+    if (!combinedNewsHtml) {
+       grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">No recent news or events available at the moment.</div>`;
+    } else {
+       grid.innerHTML = combinedNewsHtml;
+    }
   }
 }
+
+// ============================================================
+//  NEWS DETAIL MODAL
+// ============================================================
+window.openNewsModal = function(id) {
+    const n = window.allNewsItems[id];
+    if (!n) return;
+
+    const modal = document.getElementById('newsDetailModal');
+    if(!modal) return;
+    
+    document.getElementById('newsModalTitle').innerText = n.title || 'News Update';
+    document.getElementById('newsModalDate').innerText = n.date || '';
+    
+    // image
+    const imgContainer = document.getElementById('newsModalImgContainer');
+    const imgEl = document.getElementById('newsModalImg');
+    if (n.img) {
+      imgEl.src = n.img;
+      imgContainer.style.display = 'block';
+    } else {
+      imgContainer.style.display = 'none';
+      imgEl.src = '';
+    }
+
+    // content
+    document.getElementById('newsModalContent').innerHTML = n.desc || '';
+
+    // link
+    const linkBtn = document.getElementById('newsModalLink');
+    if (n.link && n.link !== '#') {
+       linkBtn.href = n.link;
+       linkBtn.style.display = 'inline-flex';
+    } else {
+       linkBtn.style.display = 'none';
+    }
+
+    modal.classList.add('open');
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
+}
+
+function closeNewsDetailModal() {
+    document.getElementById('newsDetailModal')?.classList.remove('open');
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
+}
+
+document.getElementById('newsModalClose')?.addEventListener('click', closeNewsDetailModal);
+document.getElementById('newsDetailModal')?.addEventListener('click', (e) => {
+  if (e.target === document.getElementById('newsDetailModal')) closeNewsDetailModal();
+});
+
+// ============================================================
+//  IMAGE LIGHTBOX
+// ============================================================
+window.openLightbox = function(src) {
+    const lb = document.getElementById('imageLightbox');
+    const img = document.getElementById('lightboxImg');
+    if (lb && img && src) {
+        img.src = src;
+        lb.classList.add('open');
+        lb.style.display = 'flex';
+        document.body.classList.add('no-scroll');
+        document.documentElement.classList.add('no-scroll');
+    }
+};
+
+window.closeLightbox = function() {
+    const lb = document.getElementById('imageLightbox');
+    if (lb) {
+        lb.classList.remove('open');
+        lb.style.display = 'none';
+        
+        // Remove hidden only if the news modal isn't strictly holding it
+        if (!document.getElementById('newsDetailModal')?.classList.contains('open') && !document.getElementById('waModal')?.classList.contains('open')) {
+            document.body.classList.remove('no-scroll');
+            document.documentElement.classList.remove('no-scroll');
+        }
+    }
+};
 
 // ============================================================
 //  CONTACT FORM → WHATSAPP

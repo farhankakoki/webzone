@@ -723,13 +723,13 @@
         <input type="text" id="news_link_in" class="form-input" placeholder="https://wa.me/...">
       </div>
       <input type="hidden" id="editIdx" value="-1">
+      <input type="hidden" id="editDbId" value="">
       <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
         <button class="btn-admin" onclick="closeNewsModal()">Cancel</button>
         <button class="btn-admin btn-primary" onclick="saveNews()">Save Post</button>
       </div>
     </div>
-  </div>
-
+  <script type="module" src="../js/db.js"></script>
   <script src="../js/admin.js"></script>
 </body>
 
