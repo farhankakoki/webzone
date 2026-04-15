@@ -64,6 +64,12 @@ body {
 }
 [lang="ml"] body { font-family: 'Noto Sans Malayalam', 'Inter', sans-serif; letter-spacing: 0; }
 [lang="hi"] body { font-family: 'Noto Sans Devanagari', 'Inter', sans-serif; letter-spacing: 0; }
+[lang="ta"] body { font-family: 'Noto Sans Tamil', 'Inter', sans-serif; letter-spacing: 0; }
+[lang="ur"] body { font-family: 'Noto Nastaliq Urdu', 'Inter', sans-serif; direction: rtl; }
+[lang="ur"] .nav-actions, [lang="ur"] .brand-img-logo, [lang="ur"] .footer-social { direction: ltr; }
+[lang="ur"] .footer-contact-list li i { margin-left: 10px; margin-right: 0; }
+[lang="ur"] .srv-icon, [lang="ur"] .contact-icon { margin-left: 0; margin-right: 0; }
+[lang="ur"] .section-title { line-height: 1.6; }
 a { text-decoration: none; color: inherit; transition: var(--transition); }
 button { cursor: pointer; border: none; font-family: inherit; background: none; transition: var(--transition); }
 img { max-width: 100%; height: auto; display: block; }
@@ -1597,7 +1603,7 @@ ul { list-style: none; }
 .footer-top { padding: 60px 0 40px; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .footer-top-inner {
   display: grid;
-  grid-template-columns: 1.8fr 1fr 1fr 1.2fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
   gap: 40px;
 }
 .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
@@ -2280,14 +2286,15 @@ ul { list-style: none; }
   .footer-social { gap: 8px; }
   .footer-social a { width: 34px; height: 34px; font-size: 14px; }
 
-  /* Links: 2-column grid side by side */
-  .footer-links-row {
+  /* Links grid */
+  .footer-top-inner {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px 12px;
-    padding-bottom: 18px;
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .footer-brand-col {
+    padding-bottom: 25px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
-    margin-bottom: 18px;
   }
   .footer-col h4 {
     font-size: 10px;
@@ -2305,19 +2312,19 @@ ul { list-style: none; }
   .footer-col.footer-contact-col h4 { margin-bottom: 12px; }
   .footer-contact-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    flex-direction: column;
+    gap: 10px;
   }
   .footer-contact-list li {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11.5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
     color: rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.05);
-    padding: 6px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    white-space: normal;
   }
   .footer-contact-list li i { margin-top: 0; font-size: 11px; }
 

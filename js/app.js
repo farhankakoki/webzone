@@ -36,7 +36,7 @@ function applyLanguage(lang, reRender = true) {
   trackEvent('lang', lang);
 
   // Update label
-  const labels = { en: 'EN', ml: 'ML', hi: 'HI' };
+  const labels = { en: 'EN', ml: 'ML', hi: 'HI', ur: 'UR', ta: 'TA' };
   const el = document.getElementById('langLabel');
   if (el) el.textContent = labels[lang] || 'EN';
 
@@ -143,7 +143,7 @@ function initNavbar() {
 
   // Mobile lang quick-cycle button (cycles EN→ML→HI)
   mobileLangBtn?.addEventListener('click', () => {
-    const langs = ['en', 'ml', 'hi'];
+    const langs = ['en', 'ml', 'hi', 'ur', 'ta'];
     const cur = document.documentElement.lang || 'en';
     const next = langs[(langs.indexOf(cur) + 1) % langs.length];
     applyLanguage(next);
@@ -485,10 +485,13 @@ const BLOGGER_FEED_URL = 'https://webzoneonlineservicecenter.blogspot.com/feeds/
 window.allNewsItems = [];
 
 async function fetchNews() {
-  const grid = document.getElementById('newsGrid');
-  if (!grid) return;
+  const mainGrid = document.getElementById('mainNewsGrid');
+  const modalGrid = document.getElementById('modalNewsGrid');
+  if (!mainGrid && !modalGrid) return;
 
-  let combinedNewsHtml = '';
+  let combinedNewsHtmlModal = '';
+  let combinedNewsHtmlMain = '';
+  
   // reset on fetch
   window.allNewsItems = [];
   let newsIdx = 0;
@@ -504,31 +507,31 @@ async function fetchNews() {
       if (ls) dbNews = JSON.parse(ls);
   }
 
-  if (dbNews && dbNews.length > 0) {
-      combinedNewsHtml += dbNews.slice(0, 15).map(n => {
-        n._id = newsIdx++;
-        window.allNewsItems.push(n);
-
-        const imgHtml = n.img 
-          ? `<div class="news-img-wrap"><img src="${n.img}" class="news-img" alt="News Image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-             <div class="news-img-placeholder" style="display:none;">📰</div></div>`
-          : `<div class="news-img-wrap"><div class="news-img-placeholder">📰</div></div>`;
-          
-        return `
-          <div class="news-card">
-            ${imgHtml}
-            <div class="news-body">
-              <div class="news-date">${n.date}</div>
-              <h3 class="news-title">${n.title}</h3>
-              <div class="news-excerpt" style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">${n.desc.replace(/<[^>]+>/g, '')}</div>
-              <button onclick="openNewsModal(${n._id})" class="news-link btn-admin" style="background:transparent; border:none; padding:0; font-size:14px; font-weight:600; cursor:pointer;">${t('news_read')}</button>
-            </div>
+  // Helper render function
+  const renderCard = (n) => {
+      const imgHtml = n.img 
+        ? `<div class="news-img-wrap"><img src="${n.img}" class="news-img" alt="News Image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+           <div class="news-img-placeholder" style="display:none;">📰</div></div>`
+        : `<div class="news-img-wrap"><div class="news-img-placeholder">📰</div></div>`;
+        
+      return `
+        <div class="news-card">
+          ${imgHtml}
+          <div class="news-body">
+            <div class="news-date">${n.date}</div>
+            <h3 class="news-title">${n.title}</h3>
+            <div class="news-excerpt" style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">${n.desc.replace(/<[^>]+>/g, '').substring(0, 120)}...</div>
+            <button onclick="openNewsModal(${n._id})" class="news-link btn-admin" style="background:transparent; border:none; padding:0; font-size:14px; font-weight:600; cursor:pointer;">${t('news_read')}</button>
           </div>
-        `;
-      }).join('');
+        </div>
+      `;
+  };
+
+  if (dbNews && dbNews.length > 0) {
+      dbNews.forEach(n => { n._id = newsIdx++; window.allNewsItems.push(n); });
+      combinedNewsHtmlModal += dbNews.slice(0, 15).map(renderCard).join('');
+      combinedNewsHtmlMain += dbNews.slice(0, 3).map(renderCard).join('');
   }
-
-
 
   try {
     const response = await fetch(BLOGGER_FEED_URL, { signal: AbortSignal.timeout(6000) });
@@ -536,10 +539,9 @@ async function fetchNews() {
     
     const data = await response.json();
     const entries = data.feed?.entry || [];
-    
     if (entries.length === 0) throw new Error('No entries');
 
-    const bloggerHtml = entries.slice(0, 15).map(entry => {
+    const bloggerMapped = entries.map(entry => {
       const title = entry.title?.$t || 'Article';
       const link = entry.link?.find(l => l.rel === 'alternate')?.href || '#';
       const date = new Date(entry.published?.$t || Date.now()).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -549,32 +551,20 @@ async function fetchNews() {
       const n = { title, date, desc: summary, link, img: thumb };
       n._id = newsIdx++;
       window.allNewsItems.push(n);
+      return n;
+    });
 
-      const imgHtml = thumb
-        ? `<div class="news-img-wrap"><img src="${thumb}" class="news-img" alt="Blogger post" loading="lazy" onerror="this.parentNode.innerHTML='<div class=news-img-placeholder>📰</div>'"></div>`
-        : `<div class="news-img-wrap"><div class="news-img-placeholder">📰</div></div>`;
+    const bloggerHtmlModal = bloggerMapped.slice(0, 15).map(renderCard).join('');
+    const bloggerHtmlMain = bloggerMapped.slice(0, 3).map(renderCard).join('');
 
-      return `
-        <div class="news-card">
-          ${imgHtml}
-          <div class="news-body">
-            <div class="news-date">${date}</div>
-            <h3 class="news-title">${title}</h3>
-            <div class="news-excerpt" style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">${summary.replace(/<[^>]+>/g, '').substring(0, 120)}...</div>
-            <button onclick="openNewsModal(${n._id})" class="news-link btn-admin" style="background:transparent; border:none; padding:0; font-size:14px; font-weight:600; cursor:pointer;">${t('news_read')}</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    grid.innerHTML = combinedNewsHtml + bloggerHtml;
+    if (modalGrid) modalGrid.innerHTML = combinedNewsHtmlModal + bloggerHtmlModal;
+    if (mainGrid) mainGrid.innerHTML = combinedNewsHtmlMain + bloggerHtmlMain;
 
   } catch (err) {
-    if (!combinedNewsHtml) {
-       grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">No recent news or events available at the moment.</div>`;
-    } else {
-       grid.innerHTML = combinedNewsHtml;
-    }
+    const fallbackMsg = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">No recent news or events available at the moment.</div>`;
+    
+    if (modalGrid) modalGrid.innerHTML = combinedNewsHtmlModal || fallbackMsg;
+    if (mainGrid) mainGrid.innerHTML = combinedNewsHtmlMain || fallbackMsg;
   }
 
   // ===== UPDATE MARQUEE DYNAMICALLY =====
