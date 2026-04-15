@@ -215,13 +215,14 @@ function scrollToTop() {
 // ============================================================
 let heroIndex = 0;
 let heroTimer = null;
-const SLIDE_DURATION = 5000;
+const SLIDE_DURATION = 3500;
 
 function initHeroSlider() {
   const slides = document.querySelectorAll('.hero-slide');
   if (slides.length === 0) return; // Exit if no slider
 
   const dots = document.querySelectorAll('.hero-dot');
+  const sliderWrap = document.getElementById('heroSlider');
 
   document.getElementById('heroPrev')?.addEventListener('click', () => {
     heroGoTo((heroIndex - 1 + slides.length) % slides.length);
@@ -233,6 +234,18 @@ function initHeroSlider() {
   dots.forEach(dot => {
     dot.addEventListener('click', () => heroGoTo(parseInt(dot.dataset.slide)));
   });
+
+  // Mobile swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  sliderWrap?.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+  sliderWrap?.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) heroGoTo((heroIndex + 1) % slides.length);
+      if (touchEndX > touchStartX + 50) heroGoTo((heroIndex - 1 + slides.length) % slides.length);
+  }, { passive: true });
 
   startHeroTimer(slides.length);
 }
@@ -246,14 +259,6 @@ function heroGoTo(idx) {
   heroIndex = idx;
   slides[heroIndex]?.classList.add('active');
   dots[heroIndex]?.classList.add('active');
-
-  // Re-trigger animation
-  const inner = slides[heroIndex]?.querySelector('.hero-slide-inner');
-  if (inner) {
-    inner.style.animation = 'none';
-    inner.offsetHeight; // reflow
-    inner.style.animation = '';
-  }
 
   resetHeroTimer(slides.length);
 }
@@ -338,7 +343,7 @@ function buildServiceCard(s) {
     <div class="srv-card ${s.featured ? 'featured' : ''}">
       <div class="srv-card-top">
         <div class="srv-icon ${catClass}">
-          <i class="${s.icon}"></i>
+          <span class="emoji-icon">${s.icon}</span>
         </div>
         <div class="srv-badges">
           ${featuredBadge}
@@ -533,52 +538,14 @@ async function fetchNews() {
       combinedNewsHtmlMain += dbNews.slice(0, 3).map(renderCard).join('');
   }
 
-  try {
-    const response = await fetch(BLOGGER_FEED_URL, { signal: AbortSignal.timeout(6000) });
-    if (!response.ok) throw new Error('Feed unavailable');
-    
-    const data = await response.json();
-    const entries = data.feed?.entry || [];
-    if (entries.length === 0) throw new Error('No entries');
-
-    const bloggerMapped = entries.map(entry => {
-      const title = entry.title?.$t || 'Article';
-      const link = entry.link?.find(l => l.rel === 'alternate')?.href || '#';
-      const date = new Date(entry.published?.$t || Date.now()).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
-      const summary = entry.summary?.$t || entry.content?.$t || '';
-      const thumb = entry?.['media$thumbnail']?.url || null;
-      
-      const n = { title, date, desc: summary, link, img: thumb };
-      n._id = newsIdx++;
-      window.allNewsItems.push(n);
-      return n;
-    });
-
-    const bloggerHtmlModal = bloggerMapped.slice(0, 15).map(renderCard).join('');
-    const bloggerHtmlMain = bloggerMapped.slice(0, 3).map(renderCard).join('');
-
-    if (modalGrid) modalGrid.innerHTML = combinedNewsHtmlModal + bloggerHtmlModal;
-    if (mainGrid) mainGrid.innerHTML = combinedNewsHtmlMain + bloggerHtmlMain;
-
-  } catch (err) {
-    const fallbackMsg = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">No recent news or events available at the moment.</div>`;
-    
-    if (modalGrid) modalGrid.innerHTML = combinedNewsHtmlModal || fallbackMsg;
-    if (mainGrid) mainGrid.innerHTML = combinedNewsHtmlMain || fallbackMsg;
-  }
-
-  // ===== UPDATE MARQUEE DYNAMICALLY =====
-  if (window.allNewsItems && window.allNewsItems.length > 0) {
-      const topNews = window.allNewsItems.slice(0, 4);
-      let marqueeLinksHtml = topNews.map(n => 
-          `<span style="cursor:pointer; color:inherit; transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='inherit'" onclick="openNewsModal(${n._id})">✨ ${n.title}</span><span class="marquee-sep">|</span>`
-      ).join('');
-      
-      const marqueeInners = document.querySelectorAll('.marquee-inner');
-      if (marqueeInners.length) {
-          marqueeInners.forEach(el => el.innerHTML = marqueeLinksHtml + marqueeLinksHtml);
-      }
-  }
+    if (dbNews && dbNews.length > 0) {
+        if (modalGrid) modalGrid.innerHTML = combinedNewsHtmlModal;
+        if (mainGrid) mainGrid.innerHTML = combinedNewsHtmlMain;
+    } else {
+        const fallbackMsg = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">No recent news or events available at the moment.</div>`;
+        if (modalGrid) modalGrid.innerHTML = fallbackMsg;
+        if (mainGrid) mainGrid.innerHTML = fallbackMsg;
+    }
 }
 
 // ============================================================
@@ -777,7 +744,7 @@ function initSearch() {
     results.innerHTML = matches.length
       ? matches.map(s => `
           <div class="search-result-item" onclick="scrollToServices('${s.cat}'); box?.classList.remove('open');">
-            <i class="${s.icon}"></i>
+            <span class="emoji-icon">${s.icon}</span>
             <span>${s.title[currentLang] || s.title.en}</span>
           </div>
         `).join('')
