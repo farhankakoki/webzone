@@ -7,6 +7,7 @@
 let currentLang = localStorage.getItem('wz_lang') || 'en';
 let currentCat = 'all';
 let allServicesVisible = false;
+let allNewsVisible = false;
 const SERVICES_INITIAL = 9; // Show first 9 services
 
 // ---- INIT ----
@@ -279,7 +280,7 @@ function resetHeroTimer(total) {
 // ============================================================
 function showSkeletons() {
   const sGrid = document.getElementById('servicesGrid');
-  const nGrid = document.getElementById('newsGrid');
+  const nGrid = document.getElementById('mainNewsGrid');
   
   const sCard = `
     <div class="skeleton-card">
@@ -322,10 +323,27 @@ function renderServices(cat) {
 
   grid.innerHTML = toShow.map(s => buildServiceCard(s)).join('');
 
-  // Show More button
+  // Show More / Show Less button
   const showMoreWrap = document.getElementById('showMoreWrap');
-  if (showMoreWrap) {
-    showMoreWrap.style.display = (filtered.length > SERVICES_INITIAL && !allServicesVisible) ? 'block' : 'none';
+  const showMoreBtn = document.getElementById('showMoreBtn');
+  if (showMoreWrap && showMoreBtn) {
+    if (filtered.length > SERVICES_INITIAL) {
+      showMoreWrap.style.display = 'block';
+      if (allServicesVisible) {
+        showMoreBtn.innerHTML = `<span>Show Less</span> <i class="fa-solid fa-chevron-up"></i>`;
+      } else {
+        showMoreBtn.innerHTML = `<span data-i18n="show_more">Show More Services</span> <i class="fa-solid fa-chevron-down"></i>`;
+        // Re-apply translation if needed
+        const span = showMoreBtn.querySelector('span');
+        if (span) {
+          const key = span.getAttribute('data-i18n');
+          const val = t(key);
+          if (val && val !== key) span.innerHTML = val;
+        }
+      }
+    } else {
+      showMoreWrap.style.display = 'none';
+    }
   }
 }
 
@@ -369,10 +387,14 @@ function getCatLabel(cat) {
   return map[cat] || '•';
 }
 
-// Show More
+// Show More / Less
 document.getElementById('showMoreBtn')?.addEventListener('click', () => {
-  allServicesVisible = true;
+  allServicesVisible = !allServicesVisible;
   renderServices(currentCat);
+  if (!allServicesVisible) {
+    const el = document.getElementById('services');
+    if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+  }
 });
 
 // Tab clicks
@@ -495,7 +517,6 @@ async function fetchNews() {
   if (!mainGrid && !modalGrid) return;
 
   let combinedNewsHtmlModal = '';
-  let combinedNewsHtmlMain = '';
   
   // reset on fetch
   window.allNewsItems = [];
@@ -535,18 +556,79 @@ async function fetchNews() {
   if (dbNews && dbNews.length > 0) {
       dbNews.forEach(n => { n._id = newsIdx++; window.allNewsItems.push(n); });
       combinedNewsHtmlModal += dbNews.slice(0, 15).map(renderCard).join('');
-      combinedNewsHtmlMain += dbNews.slice(0, 3).map(renderCard).join('');
   }
 
     if (dbNews && dbNews.length > 0) {
         if (modalGrid) modalGrid.innerHTML = combinedNewsHtmlModal;
-        if (mainGrid) mainGrid.innerHTML = combinedNewsHtmlMain;
+        renderMainNews(renderCard);
     } else {
         const fallbackMsg = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">No recent news or events available at the moment.</div>`;
         if (modalGrid) modalGrid.innerHTML = fallbackMsg;
         if (mainGrid) mainGrid.innerHTML = fallbackMsg;
     }
 }
+
+function renderMainNews(renderCardFn) {
+  const mainGrid = document.getElementById('mainNewsGrid');
+  if (!mainGrid) return;
+  const items = window.allNewsItems;
+  if (!items || items.length === 0) return;
+  
+  const toShow = allNewsVisible ? items : items.slice(0, 3);
+  
+  // Re-use the render function logic if passed, else fallback
+  const renderCard = renderCardFn || ((n) => {
+      const imgHtml = n.img 
+        ? `<div class="news-img-wrap"><img src="${n.img}" class="news-img" alt="News Image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+           <div class="news-img-placeholder" style="display:none;">📰</div></div>`
+        : `<div class="news-img-wrap"><div class="news-img-placeholder">📰</div></div>`;
+        
+      return `
+        <div class="news-card">
+          ${imgHtml}
+          <div class="news-body">
+            <div class="news-date">${n.date}</div>
+            <h3 class="news-title">${n.title}</h3>
+            <div class="news-excerpt" style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">${n.desc.replace(/<[^>]+>/g, '').substring(0, 120)}...</div>
+            <button onclick="openNewsModal(${n._id})" class="news-link btn-admin" style="background:transparent; border:none; padding:0; font-size:14px; font-weight:600; cursor:pointer;">${t('news_read')}</button>
+          </div>
+        </div>
+      `;
+  });
+  
+  mainGrid.innerHTML = toShow.map(renderCard).join('');
+  
+  const showMoreWrap = document.getElementById('showMoreNewsWrap');
+  const showMoreBtn = document.getElementById('showMoreNewsBtn');
+  if (showMoreWrap && showMoreBtn) {
+      if (items.length > 3) {
+          showMoreWrap.style.display = 'block';
+          if (allNewsVisible) {
+              showMoreBtn.innerHTML = `<span>Show Less News</span> <i class="fa-solid fa-chevron-up"></i>`;
+          } else {
+              showMoreBtn.innerHTML = `<span data-i18n="show_more_news">Read More News</span> <i class="fa-solid fa-chevron-down"></i>`;
+              // Re-apply translation if needed
+              const span = showMoreBtn.querySelector('span');
+              if (span) {
+                  const key = span.getAttribute('data-i18n');
+                  const val = t(key);
+                  if (val && val !== key) span.innerHTML = val;
+              }
+          }
+      } else {
+          showMoreWrap.style.display = 'none';
+      }
+  }
+}
+
+document.getElementById('showMoreNewsBtn')?.addEventListener('click', () => {
+  allNewsVisible = !allNewsVisible;
+  renderMainNews();
+  if (!allNewsVisible) {
+    const el = document.getElementById('news');
+    if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+  }
+});
 
 // ============================================================
 //  NEWS DETAIL MODAL
