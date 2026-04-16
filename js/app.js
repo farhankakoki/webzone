@@ -118,6 +118,10 @@ function initNavbar() {
     updateActiveNavLink();
   }, { passive: true });
 
+  // Initial call
+  updateActiveNavLink();
+  navbar?.classList.toggle('scrolled', window.scrollY > 20);
+
   // Drawer open/close helpers
   const openDrawer = () => {
     mobileNav?.classList.add('open');
@@ -186,7 +190,7 @@ function initNavbar() {
 }
 
 function updateActiveNavLink() {
-  const sections = ['home', 'services', 'about', 'faq', 'news', 'contact'];
+  const sections = ['home', 'news', 'services', 'about', 'faq', 'contact'];
   const navLinks = document.querySelectorAll('.nav-link');
   const bottomLinks = document.querySelectorAll('.bottom-nav-item');
   
@@ -196,9 +200,13 @@ function updateActiveNavLink() {
     if (el && window.scrollY >= el.offsetTop - 150) current = id;
   });
 
+  // Map sections with no nav link to their nearest parent nav link
+  const navMap = { faq: 'about' };
+  const navCurrent = navMap[current] || current;
+
   navLinks.forEach(link => {
     const href = link.getAttribute('href')?.replace('#', '');
-    link.classList.toggle('active-section', href === current);
+    link.classList.toggle('active-section', href === navCurrent);
   });
 
   bottomLinks.forEach(link => {
@@ -890,17 +898,28 @@ function initStatCounter() {
   counters.forEach(el => observer.observe(el));
 }
 
-function animateCounter(el) {
+async function animateCounter(el) {
   const target = parseInt(el.dataset.count);
-  const duration = 1800;
-  const start = Date.now();
+  const duration = 1500; // slightly faster feel
+  const start = performance.now();
+  let lastVal = -1;
 
-  function update() {
-    const elapsed = Date.now() - start;
+  function update(now) {
+    const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
+    
+    // Out-cubic easing
     const ease = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.floor(ease * target).toLocaleString();
-    if (progress < 1) requestAnimationFrame(update);
+    const current = Math.floor(ease * target);
+
+    if (current !== lastVal) {
+      el.textContent = current.toLocaleString();
+      lastVal = current;
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
   }
   requestAnimationFrame(update);
 }
@@ -909,34 +928,25 @@ function animateCounter(el) {
 //  SCROLL ANIMATIONS (Fade In Up)
 // ============================================================
 function initScrollAnimations() {
-  const observerOptions = {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  };
+  const options = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('revealed');
-        // If it's a staggered container, reveal children too if they have data-reveal
         if (entry.target.classList.contains('reveal-stagger')) {
             entry.target.querySelectorAll('[data-reveal]').forEach(child => child.classList.add('revealed'));
         }
         observer.unobserve(entry.target);
       }
     });
-  }, observerOptions);
+  }, options);
 
-  // Auto-tag elements for reveal if not already tagged
-  const autoReveal = document.querySelectorAll('.srv-card, .news-card, .step-card, .stat-item, .contact-card, .faq-item, .about-text-col, .section-header');
-  autoReveal.forEach((el, i) => {
-      if (!el.hasAttribute('data-reveal')) {
-          el.setAttribute('data-reveal', 'fade-up');
-      }
+  const selectors = '.srv-card, .news-card, .step-card, .stat-item, .contact-card, .faq-item, .about-text-col, .section-header';
+  document.querySelectorAll(selectors).forEach(el => {
+      if (!el.hasAttribute('data-reveal')) el.setAttribute('data-reveal', 'fade-up');
       observer.observe(el);
   });
-
-  // Observe tagged elements
   document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 }
 

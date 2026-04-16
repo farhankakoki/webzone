@@ -60,7 +60,7 @@ const i18n = {
     step2_desc: 'Your service request is already typed out. You don\'t have to write anything.',
     step3_title: 'Just Hit Send',
     step3_desc: 'Send the message. Our team sees it and gets back to you right away.',
-    step4_title: 'It\'s Done ✅',
+    step4_title: 'It\'s Done',
     step4_desc: 'We finish the job and send everything to you on WhatsApp. Done.',
 
     faq_badge: 'Got Questions?',
